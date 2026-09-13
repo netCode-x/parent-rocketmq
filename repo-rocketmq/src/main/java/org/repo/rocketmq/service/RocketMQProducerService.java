@@ -58,11 +58,11 @@ public class RocketMQProducerService {
 
         SendResult result = producer.send(message);
         if (result.getSendStatus() == SendStatus.SEND_OK) {
-            metrics.recordSuccess();
+            metrics.recordSuccess(sample);
             log.info("消息发送成功, topic={}, tag={}, msgId={}",
                     message.getTopic(), message.getTags(), result.getMsgId());
         } else {
-            metrics.recordFailure();
+            metrics.recordFailure(sample);
             log.warn("消息发送非 OK, topic={}, status={}",
                     message.getTopic(), result.getSendStatus());
         }
