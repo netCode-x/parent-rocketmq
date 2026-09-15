@@ -31,6 +31,7 @@ public class RocketMQProducerMetrics {
         sendSuccessCounter = Counter.builder("rocketmq_send_total")
                 .description("Total number of RocketMQ messages sent successfully")
                 .tag("status", "success")
+                .tag("topic","topic")
                 .register(meterRegistry);
 
         sendFailureCounter = Counter.builder("rocketmq_send_total")

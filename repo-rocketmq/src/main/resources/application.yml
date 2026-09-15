@@ -2,7 +2,7 @@
 spring:
   rocketmq:
     topic: T_yangkaihu_test
-    nameserver: 192.168.100.110:9776;192.168.100.110:9778
+    nameserver: 192.168.100.110:9876;192.168.100.110:9877
     sendMessageTimeout: 3000
     retryTimesWhenSendAsyncFailed: 3
     maxMessageSize: 4194304
@@ -17,8 +17,8 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
-    tags-sorter: alpha          # ???????
-    operations-sorter: alpha    # ???????
+    tags-sorter: alpha
+    operations-sorter: alpha
     display-request-duration: true
   default-produces-media-type: application/json
 server:
