@@ -1,10 +1,8 @@
 package org.repo.rocketmq.order;
 
-
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -12,80 +10,60 @@ import java.time.Duration;
 @Component
 public class RocketMQProducerMetrics {
 
-
     private final MeterRegistry meterRegistry;
 
-    private Counter sendSuccessCounter;
-    private Counter sendFailureCounter;
-    private Timer sendTimer;
+    // 默认 fallback topic，避免 topic 为空时崩溃
+    private static final String DEFAULT_TOPIC = "unknown";
 
-    private Timer sendSuccessTimer;
-    private Timer sendFailureTimer;
-
-    private RocketMQProducerMetrics(MeterRegistry meterRegistry) {
+    public RocketMQProducerMetrics(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
     }
 
-    @PostConstruct
-    public void init() {
-        sendSuccessCounter = Counter.builder("rocketmq_send_total")
-                .description("Total number of RocketMQ messages sent successfully")
-                .tag("status", "success")
-                .tag("topic","topic")
+    /**
+     * 获取（或创建）某个 topic + status 的 Counter
+     * Micrometer 会自动缓存同名同 tag 的 meter，不会重复注册
+     */
+    private Counter getCounter(String topic, String status) {
+        return Counter.builder("rocketmq_send_total")
+                .description("Total number of RocketMQ messages sent")
+                .tag("topic", safeTopic(topic))
+                .tag("status", status)
                 .register(meterRegistry);
-
-        sendFailureCounter = Counter.builder("rocketmq_send_total")
-                .description("Total number of RocketMQ messages sent failure")
-                .tag("status", "failure")
-                .register(meterRegistry);
-
-        sendTimer = Timer.builder("rocketmq_send_duration")
-                .description("Time taken to send RocketMQ mesages")
-                .publishPercentiles(0.5, 0.95, 0.99)
-                .register(meterRegistry);
-        // 成功/失败各一个 Timer，提前创建并复用
-        sendSuccessTimer = buildTimer("success");
-
-        sendFailureTimer = buildTimer("failure");
     }
 
-    private Timer buildTimer(String status) {
+    /**
+     * 获取（或创建）某个 topic + status 的 Timer
+     */
+    private Timer getTimer(String topic, String status) {
         return Timer.builder("rocketmq_send_duration")
                 .description("Time taken to send RocketMQ messages")
+                .tag("topic", safeTopic(topic))
                 .tag("status", status)
-                .publishPercentiles(0.5, 0.95, 0.99)     // 客户端算分位数
-                .publishPercentileHistogram()             // 生成 bucket，便于 Prometheus 聚合
+                .publishPercentiles(0.5, 0.95, 0.99)
+                .publishPercentileHistogram()
                 .minimumExpectedValue(Duration.ofMillis(1))
                 .maximumExpectedValue(Duration.ofSeconds(10))
                 .register(meterRegistry);
     }
 
+    private String safeTopic(String topic) {
+        return (topic == null || topic.isEmpty()) ? DEFAULT_TOPIC : topic;
+    }
+
     /**
-     * 开始计时，返回sample 用于stop
-     *
-     * @return
+     * 开始计时，返回 Sample 用于 stop
      */
     public Timer.Sample startTimer() {
         return Timer.start(meterRegistry);
     }
 
-    public void recordSuccess(Timer.Sample sample) {
-        sendSuccessCounter.increment();
-        sample.stop(sendSuccessTimer);
+    public void recordSuccess(String topic, Timer.Sample sample) {
+        getCounter(topic, "success").increment();
+        sample.stop(getTimer(topic, "success"));
     }
 
-    public void recordFailure(Timer.Sample sample) {
-        sendFailureCounter.increment();
-        sample.stop(sendFailureTimer);
-    }
-
-
-    /**
-     * 停止计时
-     *
-     * @param sample
-     */
-    public void stopTimer(Timer.Sample sample) {
-        sample.stop(sendTimer);
+    public void recordFailure(String topic, Timer.Sample sample) {
+        getCounter(topic, "failure").increment();
+        sample.stop(getTimer(topic, "failure"));
     }
 }
