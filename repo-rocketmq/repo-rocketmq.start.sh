@@ -4,7 +4,7 @@ set -e
 # ===== 配置变量 =====
 APP_NAME="repo-rocketmq"
 PORT=4567
-HOST_IP="192.168.100.101"
+HOST_IP="192.168.100.110"
 DEPLOY_DIR="/root/deploy/jdk21-app"
 # ===================
 
@@ -26,7 +26,7 @@ echo "使用 JAR: ${JAR_FILE}"
 # 生成 Dockerfile
 echo "0. 生成 Dockerfile..."
 cat > Dockerfile <<EOF
-FROM eclipse-temurin:21-jdk-alpine
+FROM openjdk:21-jdk-slim
 LABEL maintainer="yangkaihu@yeah.net"
 WORKDIR /app
 COPY ${JAR_FILE} app.jar

@@ -11,13 +11,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
-import org.repo.rocketmq.dto.SendMessageRequest;
 import org.repo.rocketmq.dto.SendMessageResponse;
 import org.repo.rocketmq.service.RocketMQProducerService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * RocketMQ 消息发送接口
+ *
+ * topic / tag / key 通过 Header 传递，消息体通过 Body 传递。
  */
 @Slf4j
 @RestController
@@ -26,40 +28,49 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "RocketMQ 消息接口", description = "发送 RocketMQ 消息")
 public class RocketMQController {
 
+    /** Header 名称常量，避免拼写错误 */
+    private static final String HEADER_TOPIC = "X-RocketMQ-Topic";
+    private static final String HEADER_TAG = "X-RocketMQ-Tag";
+    private static final String HEADER_KEY = "X-RocketMQ-Key";
+
     private final RocketMQProducerService producerService;
 
     @Operation(
             summary = "发送消息",
-            description = "支持发送到默认 Topic 或指定 Topic，可选 Tag、Key"
+            description = "topic、tag、key 通过 Header 传递，消息体通过 Body 传递。"
+                    + "Header: X-RocketMQ-Topic / X-RocketMQ-Tag / X-RocketMQ-Key，均可选。"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "发送成功",
                     content = @Content(schema = @Schema(implementation = SendMessageResponse.class))),
             @ApiResponse(responseCode = "500", description = "发送失败")
     })
-    @PostMapping("/send")
+    @PostMapping(value = "/send")
     public SendMessageResponse send(
-            @Parameter(description = "发送消息请求体", required = true)
-            @RequestBody SendMessageRequest request) {
+            @Parameter(description = "主题，不传则使用默认 Topic")
+            @RequestHeader(value = HEADER_TOPIC, required = false) String topic,
+
+            @Parameter(description = "标签，可选")
+            @RequestHeader(value = HEADER_TAG, required = false) String tag,
+
+            @Parameter(description = "业务键，可选")
+            @RequestHeader(value = HEADER_KEY, required = false) String key,
+
+            @Parameter(description = "消息体", required = true)
+            @RequestBody String body) {
         try {
-            SendResult result;
-            if (request.getKey() != null && !request.getKey().isEmpty()) {
-                result = producerService.sendWithKey(
-                        request.getTopic(), request.getTag(), request.getKey(), request.getBody());
-            } else if (request.getTag() != null && !request.getTag().isEmpty()) {
-                result = producerService.send(request.getTopic(), request.getBody(), request.getTag());
-            } else {
-                result = producerService.send(request.getTopic(), request.getBody());
-            }
+            SendResult result = producerService.send(topic, tag, key, body);
 
             boolean ok = result.getSendStatus() == SendStatus.SEND_OK;
+
             return SendMessageResponse.builder()
                     .success(ok)
                     .msgId(result.getMsgId())
                     .sendStatus(result.getSendStatus().name())
                     .build();
         } catch (Exception e) {
-            log.error("发送消息失败, request={}", request, e);
+            log.error("发送消息失败, topic={}, tag={}, key={}, body={}",
+                    topic, tag, key, body, e);
             return SendMessageResponse.builder()
                     .success(false)
                     .errorMsg(e.getMessage())
