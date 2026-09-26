@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Log4j2 配置文件
+    日志级别优先级：ALL < DEBUG < INFO < WARN < ERROR < FATAL < OFF
+    (ALL（最低）→ DEBUG → INFO → WARN → ERROR → FATAL → OFF（最高）)
+    一般建议使用 DEBUG、INFO、WARN、ERROR 四个级别，ALL 用于输出所有日志（调试用）。
+-->
+<Configuration>
+    <!-- 属性定义：可以在配置中引用的变量 -->
+    <properties>
+        <!-- 日志文件存储的根目录（相对路径），最终会生成在项目运行目录下的 log/service-logs 中 -->
+        <property name="LOG_HOME">./log/service-logs</property>
+    </properties>
+
+    <!-- Appenders：日志输出目的地定义 -->
+    <Appenders>
+        <!-- ===================== 控制台日志 ===================== -->
+        <!-- 输出到控制台，用于开发调试或实时查看 -->
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+            <!-- 日志格式：带颜色、时间、日志级别、线程、类名、消息、异常堆栈 -->
+            <PatternLayout
+                    pattern="%style{%d{ISO8601}}{bright,green}
+                    %highlight{%-5level} [%style{%t}{bright,blue}]
+                     %style{%C{}}{bright,yellow}: %msg%n%style{%throwable}{red}"
+                    disableAnsi="false" noConsoleNoAnsi="false"/>
+        </Console>
+
+        <!-- ===================== 文件日志（滚动文件） ===================== -->
+        <!--
+            以下为不同级别的滚动文件日志：
+            - 每个 Appender 负责将指定级别的日志写入单独的文件
+            - 使用 RollingFile 实现按大小和时间滚动
+        -->
+
+        <!-- all 级别日志：记录所有级别的日志（包括 DEBUG、INFO 等） -->
+        <RollingFile name="allFileAppender"
+                     fileName="${LOG_HOME}/all.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/all-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 日志格式：日期 级别 类名 [线程] 消息 -->
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <!-- 滚动策略：决定何时生成新文件 -->
+            <Policies>
+                <!-- 按文件大小滚动：单个文件超过 100 MB 时触发 -->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <!-- 按时间滚动：根据 filePattern 中的时间粒度（每天）生成新文件 -->
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <!-- 最多保留的滚动文件数（包括压缩文件），超过则覆盖最早的 -->
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+
+        <!-- debug 级别日志：只记录 DEBUG 级别（不包括 INFO 及以上） -->
+        <RollingFile name="debugFileAppender"
+                     fileName="${LOG_HOME}/debug.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/debug-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 过滤器：仅允许 DEBUG 级别（INFO 及以上的被拒绝） -->
+            <Filters>
+                <!-- onMatch="DENY"：匹配 INFO 级别时拒绝；onMismatch="NEUTRAL"：不匹配时交给下一个过滤器 -->
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+
+        <!-- info 级别日志：只记录 INFO 级别（不包括 WARN 及以上） -->
+        <RollingFile name="infoFileAppender"
+                     fileName="${LOG_HOME}/info.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 过滤器：拒绝 WARN 及以上级别，只允许 INFO 及以下（实际只保留 INFO） -->
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <!-- 注意：此处 TimeBasedTriggeringPolicy 被注释，意味着只按大小滚动，不按时间滚动 -->
+                <!-- <TimeBasedTriggeringPolicy interval="1" modulate="true />-->
+            </Policies>
+            <!-- 未配置 DefaultRolloverStrategy，则使用默认值（通常为7） -->
+        </RollingFile>
+
+        <!-- warn 级别日志：只记录 WARN 级别（不包括 ERROR 及以上） -->
+        <RollingFile name="warnFileAppender"
+                     fileName="${LOG_HOME}/warn.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <!-- 拒绝 ERROR 及以上级别，只允许 WARN 及以下（实际只保留 WARN） -->
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+
+        <!-- error 及以上级别日志：记录 ERROR 和 FATAL 级别 -->
+        <RollingFile name="errorFileAppender"
+                     fileName="${LOG_HOME}/error.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 无过滤器，默认接受所有级别（但 Root 指定了 level="error"，实际只会收到 error 及以上的日志） -->
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+
+        <!-- JSON 格式的 error 日志：将错误日志以 JSON 格式输出，便于后续分析（如导入 ELK） -->
+        <RollingFile name="errorJsonAppender"
+                     fileName="${LOG_HOME}/error-json.log"
+                     filePattern="${LOG_HOME}/error-json-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- JSONLayout：输出格式为 JSON，compact="true" 表示紧凑格式，eventEol="true" 表示每个事件占一行，locationInfo="true" 包含位置信息 -->
+            <JSONLayout compact="true" eventEol="true" locationInfo="true"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <!-- Loggers：日志记录器配置，决定哪些包/类的日志以什么级别输出到哪些 Appender -->
+    <Loggers>根日志记录器
+        <!-- ：所有未指定 Logger 的日志都由它处理 -->
+        <Root level="all">
+            <!-- 控制台：输出所有级别（all） -->
+            <AppenderRef ref="consoleAppender" level="all"/>
+            <!-- 文件：all.log 记录所有级别 -->
+            <AppenderRef ref="allFileAppender" level="all"/>
+            <!-- debug.log：仅记录 DEBUG 级别（通过 Appender 内部的过滤器进一步限制） -->
+            <AppenderRef ref="debugFileAppender" level="debug"/>
+            <!-- info.log：仅记录 INFO 级别 -->
+            <AppenderRef ref="infoFileAppender" level="info"/>
+            <!-- warn.log：仅记录 WARN 级别 -->
+            <AppenderRef ref="warnFileAppender" level="warn"/>
+            <!-- error.log：记录 ERROR 及以上级别 -->
+            <AppenderRef ref="errorFileAppender" level="error"/>
+            <!-- error-json.log：以 JSON 格式记录 ERROR 及以上级别 -->
+            <AppenderRef ref="errorJsonAppender" level="error"/>
+        </Root>
+
+        <!-- 自定义 Logger：针对特定包或类单独设置日志级别 -->
+        <!-- Spring 框架日志：设置为 INFO 级别，避免大量 DEBUG 日志 -->
+        <Logger name="org.springframework" level="info"/>
+        <!-- MyBatis（使用了 baomidou 包，常见于 MyBatis-Plus）日志：设置为 INFO 级别 -->
+        <Logger name="com.baomidou" level="info"/>
+        <!-- 可根据需要添加更多 Logger，例如：
+            <Logger name="com.your.package" level="debug"/>
+        -->
+    </Loggers>
+
+</Configuration>

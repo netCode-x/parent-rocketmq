@@ -9,11 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.repo.rocketmq.dto.SendMessageResponse;
 import org.repo.rocketmq.service.RocketMQProducerService;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "RocketMQ 消息接口", description = "发送 RocketMQ 消息")
 public class RocketMQController {
+    private static final Logger logger = LoggerFactory.getLogger(RocketMQController.class);
 
     /** Header 名称常量，避免拼写错误 */
     private static final String HEADER_TOPIC = "X-RocketMQ-Topic";
@@ -62,6 +64,7 @@ public class RocketMQController {
             SendResult result = producerService.send(topic, tag, key, body);
 
             boolean ok = result.getSendStatus() == SendStatus.SEND_OK;
+            logger.info("send to msg is: {}, this msg ID : {}",ok,result.getMsgId());
 
             return SendMessageResponse.builder()
                     .success(ok)

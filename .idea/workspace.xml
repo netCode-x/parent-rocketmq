@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="30c75c04-38d3-44e6-825e-c49003b025f9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/repo-rocketmq/src/main/resources/log4j2-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jpa-buddy.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/repo-rocketmq/src/main/java/org/repo/rocketmq/controller/RocketMQController.java" beforeDir="false" afterPath="$PROJECT_DIR$/repo-rocketmq/src/main/java/org/repo/rocketmq/controller/RocketMQController.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\Users\yangs\.m2\repository" />
+        <option name="userSettingsFile" value="D:\Users\yangs\Documents\Devtools\apache-maven-3.8.1\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="3JqZVnAxhNDYmRj7QScWD8G4XdT" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Deploy to Host.Deploy to Host.executor": "Run",
+    "Maven.parent-rocketmq [clean,install].executor": "Run",
+    "Maven.parent-rocketmq [clean].executor": "Run",
+    "Maven.parent-rocketmq [install].executor": "Run",
+    "Maven.parent-rocketmq [verify].executor": "Run",
+    "Maven.repo-rocketmq [clean:clean,package].executor": "Run",
+    "Maven.repo-rocketmq [clean].executor": "Run",
+    "Maven.repo-rocketmq [mvn,clean:clean,package].executor": "Run",
+    "Maven.repo-rocketmq [package].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Users/yangs/IdeaProjects/parent-rocketmq/repo-rocketmq",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.24367817",
+    "settings.build.tools.auto.reload": "ALL",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Users\yangs\IdeaProjects\parent-rocketmq\repo-rocketmq\src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Deploy to Host.Deploy to Host">
+    <configuration name="Deploy to Host" type="DEPLOY_HOST_RUN_CONFIGURATION" factoryName="Deploy to Host">
+      <option name="accountModel" />
+      <option name="accountModels" />
+      <option name="address" />
+      <option name="afterCommand" value="cd /root/ &amp;&amp; sh  start.sh" />
+      <option name="alreadyReset" value="true" />
+      <option name="autoOpen" value="false" />
+      <option name="beforeCommand" value="" />
+      <option name="defaultTabIdx" value="0" />
+      <option name="ecsInstance">
+        <EcsInstance>
+          <option name="OSType" />
+          <option name="instanceId" />
+          <option name="instanceName" />
+          <option name="netType" />
+          <option name="privateIps" />
+          <option name="publicIps" />
+          <option name="regionId" />
+          <option name="tags" />
+        </EcsInstance>
+      </option>
+      <option name="ecsInstances" />
+      <option name="hostIds">
+        <list>
+          <option value="1" />
+        </list>
+      </option>
+      <option name="hostTagId" value="0" />
+      <option name="location" value="/root/deploy/jdk21-app" />
+      <option name="pathOrUrl" value="D:\Users\yangs\IdeaProjects\parent-rocketmq\repo-rocketmq\target\repo-rocketmq-1.0.jar" />
+      <option name="tagId" value="0" />
+      <option name="terminalCommand" />
+      <option name="type" value="HOST" />
+      <option name="uploadType" value="MAVEN" />
+      <method v="2">
+        <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/repo-rocketmq/pom.xml" goal="clean:clean  package" />
+      </method>
+    </configuration>
+    <configuration name="RepoRocketmqApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="repo-rocketmq" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.repo.rocketmq.RepoRocketmqApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Deploy to Host.Deploy to Host" />
+      <item itemvalue="Spring Boot.RepoRocketmqApplication" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="30c75c04-38d3-44e6-825e-c49003b025f9" name="Changes" comment="" />
+      <created>1790390586274</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790390586274</updated>
+      <workItem from="1790390588736" duration="2992000" />
+      <workItem from="1790396323713" duration="2744000" />
+      <workItem from="1790399173523" duration="4324000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
